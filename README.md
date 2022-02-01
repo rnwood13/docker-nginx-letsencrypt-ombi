@@ -62,6 +62,9 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 ## Credit
 
-Shout out to [evertramos](https://github.com/evertramos) and his [nginx-proxy-automation](https://github.com/evertramos/nginx-proxy-automation) project.
+Shout out to:
+
+* evertramos's [nginx-proxy-automation](https://github.com/evertramos/nginx-proxy-automation) project
+* willquill's [plex-docker](https://github.com/willquill/plex-docker) repo
 
 <p align="right">(<a href="#top">back to top</a>)</p>
