@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   nginx-proxy-web:
@@ -19,8 +19,9 @@ services:
       - ${NGINX_FILES_PATH:-./data}/certs:/etc/nginx/certs:ro
       - ${NGINX_FILES_PATH:-./data}/htpasswd:/etc/nginx/htpasswd:ro
     logging:
-      driver: json-file
+      driver: ${LOGGING_DRIVER:-json-file}
       options:
+        loki-url: ${LOGGING_LOKI_URL}
         max-size: 4m
         max-file: 10
 
@@ -38,8 +39,9 @@ services:
       - /var/run/docker.sock:/tmp/docker.sock:ro
       - ./nginx.tmpl:/etc/docker-gen/templates/nginx.tmpl:ro
     logging:
-      driver: json-file
+      driver: ${LOGGING_DRIVER:-json-file}
       options:
+        loki-url: ${LOGGING_LOKI_URL}
         max-size: 2m
         max-file: 10
 
@@ -59,11 +61,12 @@ services:
       NGINX_PROXY_CONTAINER: nginx-proxy-web
       DEFAULT_EMAIL: ${DEFAULT_EMAIL}
     logging:
-      driver: json-file
+      driver: ${LOGGING_DRIVER:-json-file}
       options:
+        loki-url: ${LOGGING_LOKI_URL}
         max-size: 2m
         max-file: 10
-      
+
   ombi:
     image: linuxserver/ombi:${OMBI_IMAGE_VERSION:-latest}
     container_name: ombi
@@ -80,7 +83,23 @@ services:
       - ${OMBI_FILES_PATH:-./config/ombi}:/config
       - /etc/localtime:/etc/localtime:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
-    pull_policy: always 
+    pull_policy: always
+    logging:
+      driver: ${LOGGING_DRIVER:-json-file}
+      options:
+        loki-url: ${LOGGING_LOKI_URL}
+
+  grafana-agent:
+    image: grafana/agent:${GRAFANA_AGENT_IMAGE_VERSION:-latest}
+    container_name: grafana-agent
+    restart: unless-stopped
+    volumes:
+      - ${GRAFANA_AGENT_FILES_PATH:-./config/grafana-agent}/grafana-agent.yaml:/etc/agent/agent.yaml
+    pull_policy: always
+    logging:
+      driver: ${LOGGING_DRIVER:-json-file}
+      options:
+        loki-url: ${LOGGING_LOKI_URL}
 
 networks:
   default:
